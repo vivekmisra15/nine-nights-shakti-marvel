@@ -82,6 +82,10 @@ export function Intro({ title, cinematic, onBegin, soundOn, volume, setSound, se
             </button>
             <SoundToggle on={soundOn} volume={volume} onToggle={setSound} onVolume={setVolume} />
           </div>
+          <p className="intro-disclaimer">
+            Independent educational project — no Marvel or Disney content is reproduced.{" "}
+            <a href="DISCLAIMER.md" target="_blank" rel="noopener noreferrer">Full disclaimer</a>
+          </p>
         </div>
       </div>
 

@@ -2,6 +2,8 @@
 
 An interactive journey through Navaratri. Each night tells the traditional story of one form of the Devi, lets the learner make choices at the turning points, then looks at the same idea through two Marvel scenes, with questions to think through together.
 
+> **Disclaimer:** This is an independent, non-commercial, educational project. It has no affiliation with Marvel Entertainment, LLC or The Walt Disney Company. No Marvel images, footage, dialogue, or audio are reproduced. All scene descriptions are original paraphrases; all illustrations are original artworks generated in code. All thematic interpretations are the authors' own. Marvel character names and film titles are trademarks of their respective owners. [Full disclaimer →](DISCLAIMER.md)
+
 This version contains all nine nights. Each night has a one-word **theme** and one **core idea**. The core idea is the headline of "What the story is about" and, word for word, the line "To carry with you" at the end of the night.
 
 | Night | Devi | Theme | Core idea |
