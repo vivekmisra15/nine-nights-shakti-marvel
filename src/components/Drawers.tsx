@@ -152,6 +152,36 @@ export function TranscriptDrawer({ open, onClose, day, mode, onJump }: { open: b
   );
 }
 
+export function DisclaimerDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+  return (
+    <Drawer open={open} onClose={onClose} title="Disclaimer and Statement of Intent">
+      <section className="ctx">
+        <h3>No Affiliation with Marvel Entertainment or The Walt Disney Company</h3>
+        <p>This project is an independent, non-commercial, educational work. It is not affiliated with, endorsed by, sponsored by, or in any way connected to Marvel Entertainment, LLC, Marvel Studios, LLC, or The Walt Disney Company, or any of their subsidiaries or affiliates.</p>
+        <p>All Marvel character names, film titles, and related marks are trademarks and/or registered trademarks of Marvel Entertainment, LLC and/or The Walt Disney Company. All rights in those marks and the associated characters, stories, and films remain with their respective owners.</p>
+      </section>
+      <section className="ctx">
+        <h3>No Copyrighted Material Is Reproduced</h3>
+        <p>This project does not contain, embed, display, reproduce, or transmit any images, screenshots, stills, video clips, audio recordings, or verbatim dialogue from any Marvel film, series, or other production. The application contains no links to streaming or video-sharing platforms.</p>
+      </section>
+      <section className="ctx">
+        <h3>Paraphrase, Commentary, and Original Illustration</h3>
+        <p><strong>Paraphrase only.</strong> Every scene description is an original prose retelling written from scratch. No dialogue is quoted verbatim.</p>
+        <p><strong>Original illustrations.</strong> All visuals are procedurally generated, abstract, original artworks created in code. They are not derived from or substantially similar to any frame of any Marvel production.</p>
+        <p><strong>Commentary and interpretation.</strong> References identify a scene as an illustrative example of a philosophical concept and invite discussion. This is educational commentary, not reproduction. Users wishing to view the actual scenes locate them independently on licensed platforms.</p>
+      </section>
+      <section className="ctx">
+        <h3>Educational and Non-Commercial Purpose</h3>
+        <p>This project is offered free of charge for personal, family, and educational use. No revenue is generated. Its purpose is to help families explore traditional Hindu devotional stories drawn from the Devi Mahatmya, the Rig Veda, the Devi Bhagavata Purana, and the Yoga Sutras, and to connect those ideas to narratives that younger audiences may recognise. The Marvel references serve solely as comparative discussion prompts.</p>
+      </section>
+      <section className="ctx">
+        <h3>Interpretations Are the Authors' Own</h3>
+        <p>All interpretations of both the traditional stories and the Marvel scenes are solely the authors' own. They do not represent the official position of any religious institution, cultural body, or rights holder, nor the intentions of Marvel's creators, writers, or directors.</p>
+      </section>
+    </Drawer>
+  );
+}
+
 export function ContextDrawer({ open, onClose, day }: { open: boolean; onClose: () => void; day: DayContent }) {
   return (
     <Drawer open={open} onClose={onClose} title="Context and sources">

@@ -6,6 +6,7 @@ import { opening } from "../content/journey";
 import { Defs, Stars } from "../visuals/shared";
 import { sound } from "../audio/sound";
 import { SoundToggle } from "./SoundToggle";
+import { DisclaimerDrawer } from "./Drawers";
 
 const STEP_MS = 2200;
 const LAST = 2 + opening.questions.length; // 0 dark, 1 question, 2..6 questions, 7 premise
@@ -23,6 +24,7 @@ interface IntroProps {
 export function Intro({ title, cinematic, onBegin, soundOn, volume, setSound, setVolume }: IntroProps) {
   const [step, setStep] = useState(cinematic ? 0 : LAST);
   const [paused, setPaused] = useState(false);
+  const [disclaimerOpen, setDisclaimerOpen] = useState(false);
 
   useEffect(() => {
     if (paused || step >= LAST) return;
@@ -84,8 +86,9 @@ export function Intro({ title, cinematic, onBegin, soundOn, volume, setSound, se
           </div>
           <p className="intro-disclaimer">
             Independent educational project — no Marvel or Disney content is reproduced.{" "}
-            <a href="DISCLAIMER.md" target="_blank" rel="noopener noreferrer">Full disclaimer</a>
+            <button className="link-btn" onClick={() => setDisclaimerOpen(true)}>Full disclaimer</button>
           </p>
+          <DisclaimerDrawer open={disclaimerOpen} onClose={() => setDisclaimerOpen(false)} />
         </div>
       </div>
 
