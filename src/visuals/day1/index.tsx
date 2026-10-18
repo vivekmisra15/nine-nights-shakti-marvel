@@ -47,34 +47,43 @@ function Altar({ t, intensity = 1 }: { t: number; intensity?: number }) {
 function Daksha({ x, y, scale = 1, opacity = 1, turn = 0 }: { x: number; y: number; scale?: number; opacity?: number; turn?: number }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${scale * (1 - turn * 0.25)} ${scale})`} opacity={opacity}>
-      {/* Dhoti — kacha style: wide at waist, tapering with a raised centre pleat */}
+      {/* Dhoti — ONE solid wrapped shape (not split legs).
+          Curves gently outward from hip, returns to feet.
+          Fold lines are drawn ON the solid fill. */}
       <path
-        d="M -48 62 L 48 62 L 52 240 L 14 240 L 6 136 L 0 116 L -6 136 L -14 240 L -52 240 Z"
-        fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} strokeLinejoin="round"
-      />
-      {/* Torso */}
-      <path
-        d="M -36 -12 Q -46 22 -48 62 L 48 62 Q 46 22 36 -12 Q 18 -22 0 -22 Q -18 -22 -36 -12 Z"
+        d="M -50 62 Q -60 150 -54 240 L 54 240 Q 60 150 50 62 Z"
         fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5}
       />
-      {/* Uttariya — single diagonal drape across torso */}
-      <path d="M -34 -6 Q 2 24 40 56" fill="none" stroke="var(--rim)" strokeWidth={2} opacity={0.45} />
+      {/* Centre kacha fold line */}
+      <path d="M 0 70 Q 1 155 0 240" fill="none" stroke="var(--rim)" strokeWidth={2} />
+      {/* Side drape fold lines */}
+      <path d="M -28 68 Q -27 155 -26 240" fill="none" stroke="var(--rim)" strokeWidth={1} opacity={0.45} />
+      <path d="M 28 68 Q 27 155 26 240" fill="none" stroke="var(--rim)" strokeWidth={1} opacity={0.45} />
+      {/* Torso */}
+      <path
+        d="M -32 -14 Q -42 20 -50 62 L 50 62 Q 42 20 32 -14 Q 16 -22 0 -22 Q -16 -22 -32 -14 Z"
+        fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5}
+      />
+      {/* Uttariya — single diagonal drape line across torso */}
+      <path d="M -30 -8 Q 4 20 38 56" fill="none" stroke="var(--rim)" strokeWidth={2} opacity={0.45} />
       {/* Waist band */}
       <rect x={-50} y={60} width={100} height={10} rx={4} fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.2} />
-      {/* Mala — short bead arc at the collar */}
-      <path d="M -18 -18 Q 0 -5 18 -18" fill="none" stroke="var(--rim)" strokeWidth={3} strokeLinecap="round" opacity={0.65} />
+      {/* Mala — necklace arc hanging across the chest */}
+      <path d="M -20 -18 Q 0 -3 20 -18" fill="none" stroke="var(--rim)" strokeWidth={2.5} strokeLinecap="round" opacity={0.65} />
       {/* Head */}
       <circle cx={0} cy={-46} r={24} fill="var(--figure)" />
       {/* Kundala — round ear ornaments */}
       <circle cx={-28} cy={-40} r={5} fill="none" stroke="var(--rim)" strokeWidth={1.5} />
       <circle cx={28} cy={-40} r={5} fill="none" stroke="var(--rim)" strokeWidth={1.5} />
-      {/* Mukut — tiered crown: wide base band, narrowing middle, tall central shikhara */}
+      {/* Mukut — wide base band + dome crown narrowing to a central spire.
+          Much wider than before so it reads as a crown, not a temple tower. */}
+      <rect x={-30} y={-72} width={60} height={8} rx={3} fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} />
       <path
-        d="M -26 -68 L -26 -80 L -18 -80 L -18 -98 L -7 -98 L 0 -130 L 7 -98 L 18 -98 L 18 -80 L 26 -80 L 26 -68 Z"
+        d="M -24 -72 Q -28 -90 -14 -96 L -6 -96 L 0 -122 L 6 -96 L 14 -96 Q 28 -90 24 -72 Z"
         fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} strokeLinejoin="round"
       />
-      {/* Mukut base band — separate so it has full width */}
-      <rect x={-28} y={-70} width={56} height={6} rx={2} fill="var(--figure)" stroke="var(--rim)" strokeWidth={1} />
+      {/* Crown jewel finial */}
+      <circle cx={0} cy={-124} r={4} fill="var(--figure)" stroke="var(--rim)" strokeWidth={1} />
     </g>
   );
 }
