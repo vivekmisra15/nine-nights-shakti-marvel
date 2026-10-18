@@ -140,11 +140,12 @@
   --f-body: "Hanken Grotesk", "Segoe UI", system-ui, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
+  --step--2: 0.75rem;
   --step--1: 0.875rem;
   --step-0: 1.0625rem;
   --step-1: 1.25rem;
-  --step-2: 1.6rem;
-  --step-3: 2.2rem;
+  --step-2: clamp(1.3rem, 3.5vw, 1.6rem);
+  --step-3: clamp(1.6rem, 5vw, 2.2rem);
   --step-4: clamp(2.4rem, 6vw, 4.2rem);
 
   --radius: 10px;
@@ -277,8 +278,10 @@ h2:focus {
   align-self: flex-start;
 }
 
-.btn-primary:hover {
-  background: var(--lamp);
+@media (hover: hover) {
+  .btn-primary:hover {
+    background: var(--lamp);
+  }
 }
 
 .btn-primary.film {
@@ -286,8 +289,10 @@ h2:focus {
   color: var(--steel-ink);
 }
 
-.btn-primary.film:hover {
-  background: var(--steel-light);
+@media (hover: hover) {
+  .btn-primary.film:hover {
+    background: var(--steel-light);
+  }
 }
 
 .btn-primary.big {
@@ -303,8 +308,10 @@ h2:focus {
   color: var(--text);
 }
 
-.btn-quiet:hover {
-  border-color: var(--gold);
+@media (hover: hover) {
+  .btn-quiet:hover {
+    border-color: var(--gold);
+  }
 }
 
 .chip-btn {
@@ -317,8 +324,10 @@ h2:focus {
   white-space: nowrap;
 }
 
-.chip-btn:hover {
-  border-color: var(--gold);
+@media (hover: hover) {
+  .chip-btn:hover {
+    border-color: var(--gold);
+  }
 }
 
 .chip-btn.is-on {
@@ -365,8 +374,10 @@ h2:focus {
   stroke: none;
 }
 
-.icon-btn:hover:not(:disabled) {
-  border-color: var(--gold);
+@media (hover: hover) {
+  .icon-btn:hover:not(:disabled) {
+    border-color: var(--gold);
+  }
 }
 
 .icon-btn:disabled {
@@ -817,8 +828,10 @@ h2:focus {
   padding: 0.3rem 0;
 }
 
-.back-btn:hover {
-  color: var(--text);
+@media (hover: hover) {
+  .back-btn:hover {
+    color: var(--text);
+  }
 }
 
 .day-name {
@@ -860,6 +873,29 @@ h2:focus {
 @media (max-width: 720px) {
   .day-theme {
     display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .day-head {
+    padding: 0.5rem 16px;
+    gap: 0.3rem 0.8rem;
+  }
+
+  .day-name {
+    flex: 1;
+    min-width: 0;
+    gap: 0.4rem;
+  }
+
+  .day-dev,
+  .day-en {
+    font-size: var(--step-0);
+  }
+
+  .day-options .chip-btn {
+    padding-inline: 0.6em;
+    font-size: 0.75rem;
   }
 }
 
@@ -987,6 +1023,14 @@ h2:focus {
   }
 }
 
+@media (max-width: 640px) {
+  .stage {
+    position: sticky;
+    top: calc(70px + env(safe-area-inset-top, 0px));
+    z-index: 2;
+  }
+}
+
 .stage svg {
   display: block;
   width: 100%;
@@ -1106,10 +1150,15 @@ h2:focus {
   transition: opacity 0.2s ease;
 }
 
-.hotspot:hover .hotspot-label,
 .hotspot:focus-visible .hotspot-label,
 .hotspot.is-active .hotspot-label {
   opacity: 1;
+}
+
+@media (hover: hover) {
+  .hotspot:hover .hotspot-label {
+    opacity: 1;
+  }
 }
 
 .hotspot:focus-visible .hotspot-ring,
@@ -1262,8 +1311,10 @@ h2:focus {
   font-size: var(--step-0);
 }
 
-.option:hover {
-  border-color: var(--gold);
+@media (hover: hover) {
+  .option:hover {
+    border-color: var(--gold);
+  }
 }
 
 .option.is-chosen {
@@ -1762,20 +1813,27 @@ h2:focus {
 
 @media (max-width: 560px) {
   .control-bar {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.5rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.4rem 0.8rem;
+  }
+
+  .cb-right {
+    grid-column: 1 / -1;
+    justify-content: space-between;
   }
 
   .step-count {
     display: none;
   }
 
+  /* Hide secondary controls on mobile — sound, mode, and next stay visible */
+  .cb-group .chip-btn,
   .cb-right .chip-btn {
-    padding-inline: 0.65em;
+    display: none;
   }
 
   .day {
-    padding-bottom: calc(var(--bar-h) + 8rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(120px + 1.5rem + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -1979,8 +2037,10 @@ details[open] {
   transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
-.option:hover {
-  transform: translateX(4px);
+@media (hover: hover) {
+  .option:hover {
+    transform: translateX(4px);
+  }
 }
 
 /* Freeze-frame: a brief flash of light, then the picture holds still. */
@@ -3042,5 +3102,22 @@ details[open] {
   .find-search code {
     color: #000 !important;
     background: none !important;
+  }
+}
+
+/* ---------- Small-screen overrides (mobile only) -------------------------- */
+
+@media (max-width: 560px) {
+  .timer svg {
+    width: 72px;
+    height: 72px;
+  }
+
+  .stance-track {
+    height: 72px;
+  }
+
+  .stance-line {
+    top: 34px;
   }
 }

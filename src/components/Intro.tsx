@@ -25,6 +25,11 @@ export function Intro({ title, cinematic, onBegin, soundOn, volume, setSound, se
   const [step, setStep] = useState(cinematic ? 0 : LAST);
   const [paused, setPaused] = useState(false);
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
+  // On portrait phones the 1600×900 SVG slices to ~416 SVG units wide — use
+  // tighter lamp radii so all 9 dots stay within the visible crop area.
+  const narrow = typeof window !== "undefined" && window.innerWidth < 500;
+  const lampRx = narrow ? 200 : 700;
+  const lampRy = narrow ? 300 : 400;
 
   useEffect(() => {
     if (paused || step >= LAST) return;
@@ -56,8 +61,8 @@ export function Intro({ title, cinematic, onBegin, soundOn, volume, setSound, se
           return (
             <circle
               key={i}
-              cx={800 + Math.cos(a) * 700}
-              cy={450 + Math.sin(a) * 400}
+              cx={800 + Math.cos(a) * lampRx}
+              cy={450 + Math.sin(a) * lampRy}
               r={on ? 6 : 3}
               className={`intro-lamp ${on ? "is-on" : ""}`}
             />
