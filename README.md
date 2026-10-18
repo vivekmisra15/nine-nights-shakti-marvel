@@ -138,3 +138,12 @@ Each day is a list of **beats** (steps). Types: `story`, `choice`, `idea`, `scen
 
 - Marvel scenes are retold in words and drawn as original abstract illustrations. The app has no links to footage and never copies any. All dialogue is paraphrased.
 - Progress, notes and stance names are stored only in this browser. Nothing is sent anywhere.
+
+---
+
+## For those who want to go deeper
+
+Two documents capture the thinking behind how this app was built — written as part of the learning journey, and as a homage to Saraswati, the Devi of knowledge and the creative arts, in whose honour this project was made.
+
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — how the app is structured, the key decisions and trade-offs, and why each was made the way it was.
+- **[INNOVATIONS.md](INNOVATIONS.md)** — seven specific technical ideas in this project worth understanding: pure-function illustrations, deterministic randomness, a synthesised score with no audio files, the Chrome TTS silence fix, the animation clock's ref-and-state pattern, epistemic honesty as a data field, and single-file deployment.
