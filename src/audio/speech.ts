@@ -3,13 +3,13 @@
 // (the Web Speech API). Nothing is downloaded or sent anywhere.
 //
 // Voices differ by device. We prefer an Indian English voice, then any
-// English voice. For the Devi's names we use a Hindi voice when the device
-// has one, because it pronounces Sanskrit names far better.
+// English voice. Hindi is used only for the SayName pronunciation helper.
 // ---------------------------------------------------------------------------
 
 import { sound } from "./sound";
 
-const synth = (): SpeechSynthesis | null => (typeof window !== "undefined" && "speechSynthesis" in window ? window.speechSynthesis : null);
+const synth = (): SpeechSynthesis | null =>
+  typeof window !== "undefined" && "speechSynthesis" in window ? window.speechSynthesis : null;
 
 let voices: SpeechSynthesisVoice[] = [];
 const listeners = new Set<() => void>();
@@ -34,7 +34,58 @@ const pick = (prefixes: string[]) => {
   return undefined;
 };
 
-let current: { cancel: () => void } | null = null;
+/**
+ * Prefer Indian English by lang code, then by voice name (some browsers label
+ * it "Google Indian English" without a proper en-IN lang tag), then any English.
+ * British English is deliberately not preferred.
+ */
+function pickEnglish(): SpeechSynthesisVoice | undefined {
+  const byCode = voices.find((v) => v.lang.toLowerCase().startsWith("en-in"));
+  if (byCode) return byCode;
+  const byName = voices.find((v) => v.name.toLowerCase().includes("india"));
+  if (byName) return byName;
+  return voices.find((v) => v.lang.toLowerCase().startsWith("en"));
+}
+
+// ---------------------------------------------------------------------------
+// Chrome / Android TTS bug: speechSynthesis spontaneously stops after ~14 s
+// on long utterances and never fires "onend". Two mitigations:
+//   1. Split text into sentences — each utterance is a short sentence,
+//      well under the cutoff, queued via onend callbacks.
+//   2. keepAlive interval calls pause()+resume() every 10 s to prevent the
+//      synthesis engine from going idle between queued sentences.
+// ---------------------------------------------------------------------------
+
+let keepAliveId: number | undefined;
+
+function startKeepAlive() {
+  if (keepAliveId !== undefined) return;
+  keepAliveId = window.setInterval(() => {
+    const s = synth();
+    if (s?.speaking) { s.pause(); s.resume(); }
+  }, 10_000);
+}
+
+function clearKeepAlive() {
+  window.clearInterval(keepAliveId);
+  keepAliveId = undefined;
+}
+
+/** Split at sentence boundaries, keeping punctuation with each sentence. */
+function splitSentences(text: string): string[] {
+  // Use a try/catch in case the lookbehind assertion isn't supported.
+  try {
+    return text.split(/(?<=[.!?])\s+/).map((s) => s.trim()).filter(Boolean);
+  } catch {
+    return [text];
+  }
+}
+
+/**
+ * Epoch counter: incremented on every cancel(). Each queued sentence checks
+ * that the epoch still matches before speaking, so stale queues stop cleanly.
+ */
+let epoch = 0;
 
 export const narrator = {
   /** True when this browser can speak and has at least one voice. */
@@ -46,60 +97,73 @@ export const narrator = {
   },
   subscribe(fn: () => void) {
     listeners.add(fn);
-    return () => {
-      listeners.delete(fn);
-    };
+    return () => { listeners.delete(fn); };
   },
+
   /**
-   * Speak `text`. `onEnd` is called once when the line has been read, fails,
-   * or after a safety timeout (some browsers never fire "end"). It is not
-   * called when speech is cancelled on purpose.
+   * Speak `text`. `onEnd` is called once all sentences have been read.
+   * It is NOT called when speech is cancelled on purpose (pause, skip, exit).
+   * Text is split into sentences and queued sequentially to work around the
+   * Chrome long-utterance cutoff bug.
    */
   speak(text: string, onEnd?: () => void, opts: { lang?: "en" | "hi" } = {}) {
     const s = synth();
     narrator.cancel();
-    let done = false;
-    const finish = () => {
-      if (done) return;
-      done = true;
-      window.clearTimeout(timer);
-      sound.duck(false);
-      current = null;
-      onEnd?.();
-    };
+
     if (!s || voices.length === 0) {
-      // No voice on this device: carry on as if the line had been read.
-      window.setTimeout(finish, 0);
+      // No voice available: behave as if the line was read so the story continues.
+      window.setTimeout(() => onEnd?.(), 0);
       return;
     }
-    const u = new SpeechSynthesisUtterance(text);
-    const voice = opts.lang === "hi" ? pick(["hi"]) ?? pick(["en-in", "en"]) : pick(["en-in", "en-gb", "en"]);
-    if (voice) {
-      u.voice = voice;
-      u.lang = voice.lang;
-    }
-    u.rate = opts.lang === "hi" ? 0.8 : 0.95;
-    u.onend = finish;
-    u.onerror = finish;
-    // Safety net: about 2.6 words a second, plus a margin.
-    const words = text.split(/\s+/).length;
-    const timer = window.setTimeout(finish, (words / 2.2 + 3) * 1000);
-    current = {
-      // Stopping on purpose (pause, skip, leave) does not count as "finished".
-      cancel: () => {
-        done = true;
-        window.clearTimeout(timer);
-        sound.duck(false);
-      },
-    };
+
+    const myEpoch = ++epoch;
+    const voice =
+      opts.lang === "hi"
+        ? pick(["hi"]) ?? pickEnglish()
+        : pickEnglish();
+
+    const parts = splitSentences(text);
+    if (parts.length === 0) { onEnd?.(); return; }
+
     sound.duck(true);
-    s.speak(u);
+    startKeepAlive();
+
+    let i = 0;
+    let safeTimer: number | undefined;
+
+    function speakNext() {
+      if (epoch !== myEpoch) return; // cancelled — stop the chain silently
+      if (i >= parts.length) {
+        clearKeepAlive();
+        sound.duck(false);
+        onEnd?.();
+        return;
+      }
+      const u = new SpeechSynthesisUtterance(parts[i++]);
+      if (voice) { u.voice = voice; u.lang = voice.lang; }
+      u.rate = opts.lang === "hi" ? 0.8 : 0.95;
+
+      // Per-sentence safety timeout — much shorter than the old whole-text timeout.
+      const words = u.text.split(/\s+/).length;
+      safeTimer = window.setTimeout(() => {
+        if (epoch === myEpoch) speakNext();
+      }, (words / 2.2 + 3) * 1000);
+
+      u.onend = () => { window.clearTimeout(safeTimer); speakNext(); };
+      u.onerror = () => { window.clearTimeout(safeTimer); speakNext(); };
+
+      s.speak(u);
+    }
+
+    speakNext();
   },
+
   cancel() {
+    epoch++;
+    clearKeepAlive();
+    window.clearTimeout(undefined); // no-op; safe
+    sound.duck(false);
     const s = synth();
-    const c = current;
-    current = null;
     if (s && (s.speaking || s.pending)) s.cancel();
-    c?.cancel();
   },
 };
