@@ -158,7 +158,7 @@ export const narrator = {
       u.onend = () => { window.clearTimeout(safeTimer); speakNext(); };
       u.onerror = () => { window.clearTimeout(safeTimer); speakNext(); };
 
-      s.speak(u);
+      s!.speak(u);
     }
 
     speakNext();

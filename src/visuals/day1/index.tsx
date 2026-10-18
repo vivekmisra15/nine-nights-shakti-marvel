@@ -47,15 +47,34 @@ function Altar({ t, intensity = 1 }: { t: number; intensity?: number }) {
 function Daksha({ x, y, scale = 1, opacity = 1, turn = 0 }: { x: number; y: number; scale?: number; opacity?: number; turn?: number }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${scale * (1 - turn * 0.25)} ${scale})`} opacity={opacity}>
-      {/* Body — dhoti suggestion: central fold at hem */}
-      <path d="M -70 240 L -52 40 Q -46 0 -16 -12 L 16 -12 Q 46 0 52 40 L 70 240 Q 36 218 0 230 Q -36 218 -70 240 Z" fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} />
+      {/* Dhoti — kacha style: wide at waist, tapering with a raised centre pleat */}
+      <path
+        d="M -48 62 L 48 62 L 52 240 L 14 240 L 6 136 L 0 116 L -6 136 L -14 240 L -52 240 Z"
+        fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} strokeLinejoin="round"
+      />
+      {/* Torso */}
+      <path
+        d="M -36 -12 Q -46 22 -48 62 L 48 62 Q 46 22 36 -12 Q 18 -22 0 -22 Q -18 -22 -36 -12 Z"
+        fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5}
+      />
+      {/* Uttariya — single diagonal drape across torso */}
+      <path d="M -34 -6 Q 2 24 40 56" fill="none" stroke="var(--rim)" strokeWidth={2} opacity={0.45} />
+      {/* Waist band */}
+      <rect x={-50} y={60} width={100} height={10} rx={4} fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.2} />
+      {/* Mala — short bead arc at the collar */}
+      <path d="M -18 -18 Q 0 -5 18 -18" fill="none" stroke="var(--rim)" strokeWidth={3} strokeLinecap="round" opacity={0.65} />
       {/* Head */}
-      <circle cx={0} cy={-40} r={26} fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} />
-      {/* Mukut: horizontal base band + two flanking peaks + tall central shikhara */}
-      <path d="M -22 -64 L -22 -72 L -18 -72 L -14 -98 L -6 -80 L 0 -122 L 6 -80 L 14 -98 L 18 -72 L 22 -72 L 22 -64 Z" fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} />
-      {/* Kundala: circular ear ornaments — common in Indian royal iconography */}
-      <circle cx={-28} cy={-36} r={4} fill="none" stroke="var(--rim)" strokeWidth={1.5} opacity={0.75} />
-      <circle cx={28} cy={-36} r={4} fill="none" stroke="var(--rim)" strokeWidth={1.5} opacity={0.75} />
+      <circle cx={0} cy={-46} r={24} fill="var(--figure)" />
+      {/* Kundala — round ear ornaments */}
+      <circle cx={-28} cy={-40} r={5} fill="none" stroke="var(--rim)" strokeWidth={1.5} />
+      <circle cx={28} cy={-40} r={5} fill="none" stroke="var(--rim)" strokeWidth={1.5} />
+      {/* Mukut — tiered crown: wide base band, narrowing middle, tall central shikhara */}
+      <path
+        d="M -26 -68 L -26 -80 L -18 -80 L -18 -98 L -7 -98 L 0 -130 L 7 -98 L 18 -98 L 18 -80 L 26 -80 L 26 -68 Z"
+        fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} strokeLinejoin="round"
+      />
+      {/* Mukut base band — separate so it has full width */}
+      <rect x={-28} y={-70} width={56} height={6} rx={2} fill="var(--figure)" stroke="var(--rim)" strokeWidth={1} />
     </g>
   );
 }
