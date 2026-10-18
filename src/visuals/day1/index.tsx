@@ -47,9 +47,15 @@ function Altar({ t, intensity = 1 }: { t: number; intensity?: number }) {
 function Daksha({ x, y, scale = 1, opacity = 1, turn = 0 }: { x: number; y: number; scale?: number; opacity?: number; turn?: number }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${scale * (1 - turn * 0.25)} ${scale})`} opacity={opacity}>
-      <path d="M -70 240 L -52 40 Q -46 0 -16 -12 L 16 -12 Q 46 0 52 40 L 70 240 Z" fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} />
+      {/* Body — dhoti suggestion: central fold at hem */}
+      <path d="M -70 240 L -52 40 Q -46 0 -16 -12 L 16 -12 Q 46 0 52 40 L 70 240 Q 36 218 0 230 Q -36 218 -70 240 Z" fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} />
+      {/* Head */}
       <circle cx={0} cy={-40} r={26} fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} />
-      <path d="M -18 -60 L -10 -104 L 0 -76 L 10 -104 L 18 -60 Z" fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} />
+      {/* Mukut: horizontal base band + two flanking peaks + tall central shikhara */}
+      <path d="M -22 -64 L -22 -72 L -18 -72 L -14 -98 L -6 -80 L 0 -122 L 6 -80 L 14 -98 L 18 -72 L 22 -72 L 22 -64 Z" fill="var(--figure)" stroke="var(--rim)" strokeWidth={1.5} />
+      {/* Kundala: circular ear ornaments — common in Indian royal iconography */}
+      <circle cx={-28} cy={-36} r={4} fill="none" stroke="var(--rim)" strokeWidth={1.5} opacity={0.75} />
+      <circle cx={28} cy={-36} r={4} fill="none" stroke="var(--rim)" strokeWidth={1.5} opacity={0.75} />
     </g>
   );
 }
@@ -591,7 +597,12 @@ function AncestralSky({ t }: { t: number }) {
       <g transform="translate(1320 640)" fill="var(--figure)">
         <path d="M -6 0 L -4 -120 L 4 -120 L 6 0 Z" />
         <path d="M -4 -110 L -60 -150 M 4 -110 L 70 -160" stroke="var(--figure)" strokeWidth={6} />
-        <ellipse cx={0} cy={-170} rx={150} ry={26} />
+        {/* Prabhamandala: radial halo lines instead of a flat Roman-style disc */}
+        {Array.from({ length: 9 }, (_, i) => {
+          const a = -Math.PI / 2 + (i / 8) * Math.PI;
+          return <line key={i} x1={Math.cos(a) * 18} y1={-130 + Math.sin(a) * 18} x2={Math.cos(a) * 70} y2={-130 + Math.sin(a) * 70} stroke="var(--figure)" strokeWidth={2} opacity={0.6} />;
+        })}
+        <circle cx={0} cy={-130} r={18} fill="var(--figure)" opacity={0.9} />
       </g>
     </>
   );
