@@ -35,16 +35,22 @@ const pick = (prefixes: string[]) => {
 };
 
 /**
- * Prefer Indian English by lang code, then by voice name (some browsers label
- * it "Google Indian English" without a proper en-IN lang tag), then any English.
- * British English is deliberately not preferred.
+ * Prefer American English (en-US), then Canadian (en-CA), then any English.
+ * British and Indian English are deliberately not preferred — their TTS voices
+ * sound unnatural with sentence-split pauses on most browsers.
  */
 function pickEnglish(): SpeechSynthesisVoice | undefined {
-  const byCode = voices.find((v) => v.lang.toLowerCase().startsWith("en-in"));
-  if (byCode) return byCode;
-  const byName = voices.find((v) => v.name.toLowerCase().includes("india"));
-  if (byName) return byName;
-  return voices.find((v) => v.lang.toLowerCase().startsWith("en"));
+  const byUS = voices.find((v) => v.lang.toLowerCase().startsWith("en-us"));
+  if (byUS) return byUS;
+  const byCA = voices.find((v) => v.lang.toLowerCase().startsWith("en-ca"));
+  if (byCA) return byCA;
+  // Skip en-GB and en-IN; take any other English voice
+  return voices.find(
+    (v) =>
+      v.lang.toLowerCase().startsWith("en") &&
+      !v.lang.toLowerCase().startsWith("en-gb") &&
+      !v.lang.toLowerCase().startsWith("en-in"),
+  ) ?? voices.find((v) => v.lang.toLowerCase().startsWith("en"));
 }
 
 // ---------------------------------------------------------------------------
